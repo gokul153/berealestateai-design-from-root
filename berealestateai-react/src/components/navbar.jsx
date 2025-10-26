@@ -1,13 +1,7 @@
 import React, { useState } from "react";
+import Logo from "./Logo";
 
-/**
- * Navbar inspired by the screenshot:
- * - left logo
- * - buy/rent selector
- * - large search input with near-me + mic + search icons
- * - right side: Post property button, user icon, hamburger
- * - second tab row (Overview, Prices, Reviews...)
- */
+
 
 export default function Navbar() {
   const [pref, setPref] = useState("Buy");
@@ -18,7 +12,7 @@ export default function Navbar() {
     <header className="nav-root">
       <div className="nav-top">
         <div className="nav-left">
-          <img src="/final-design.jpg" alt="Logo" className="logo" />
+            <Logo />
         </div>
 
         <div className="nav-center">
@@ -40,7 +34,7 @@ export default function Navbar() {
           <div className="search-wrap">
             <input
               className="search-input"
-              placeholder="Enter Locality / Project / Society / Landmark"
+              placeholder="Enter which type of property, location, or project"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
