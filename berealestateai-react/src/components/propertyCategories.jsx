@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const PropertyCategories = () => {
@@ -5,61 +6,52 @@ const PropertyCategories = () => {
     {
       title: "Residential Land",
       properties: "1,300+ Properties",
-      imgSrc: "path/to/residential-land.jpg",  // Update with the actual image path
+      imgSrc: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae",
       altText: "Residential Land",
     },
     {
       title: "Independent House / Villa",
       properties: "1,000+ Properties",
-      imgSrc: "path/to/independent-house.jpg",  // Update with the actual image path
+      imgSrc: "https://images.unsplash.com/photo-1572120360610-d971b9c79809",
       altText: "Independent House / Villa",
     },
     {
       title: "Residential Apartment",
       properties: "410+ Properties",
-      imgSrc: "path/to/residential-apartment.jpg",  // Update with the actual image path
+      imgSrc: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
       altText: "Residential Apartment",
     },
     {
       title: "Commercial Building",
       properties: "250+ Properties",
-      imgSrc: "path/to/commercial-building.jpg",  // Update with the actual image path
+      imgSrc: "https://images.unsplash.com/photo-1570129477492-45c003edd2be",
       altText: "Commercial Building",
     },
   ];
 
   return (
-    <div className="property-categories" style={styles.container}>
-      {categories.map((category, index) => (
-        <div className="category" key={index} style={styles.category}>
-          <img src={category.imgSrc} alt={category.altText} style={styles.image} />
-          <h3>{category.title}</h3>
-          <p>{category.properties}</p>
-        </div>
-      ))}
+    <div className="container py-4">
+      <h2 className="mb-4 fw-bold">Property Categories</h2>
+      <div className="row g-4">
+        {categories.map((category, index) => (
+          <div className="col-md-3" key={index}>
+            <div className="card h-100 shadow-sm">
+              <img
+                src={category.imgSrc}
+                className="card-img-top"
+                alt={category.altText}
+                style={{ height: "180px", objectFit: "cover" }}
+              />
+              <div className="card-body text-center">
+                <h5 className="card-title">{category.title}</h5>
+                <p className="card-text text-muted">{category.properties}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'space-around',
-    flexWrap: 'wrap',
-  },
-  category: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: '10px',
-    padding: '20px',
-    margin: '10px',
-    width: '200px',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-    textAlign: 'center',
-  },
-  image: {
-    width: '100%',
-    borderRadius: '10px',
-  },
 };
 
 export default PropertyCategories;
