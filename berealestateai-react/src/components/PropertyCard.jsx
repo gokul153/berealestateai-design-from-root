@@ -9,6 +9,7 @@ const PropertyCard = ({
   bedrooms,
   bathrooms,
   area,
+  areaUnit,
   link,
 }) => {
   return (
@@ -31,7 +32,7 @@ const PropertyCard = ({
           </p>
           {bedrooms > 0 && (
             <p className="mb-1">
-              {bedrooms} BHK | {bathrooms} Bath | {area} sqft
+              {bedrooms} BHK | {bathrooms} Bath | {area} {areaUnit}
             </p>
           )}
           <a href={link} className="btn btn-outline-primary mt-2">

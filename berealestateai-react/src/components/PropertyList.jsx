@@ -1,49 +1,66 @@
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import PropertyCard from "./PropertyCard";
 
-const properties = [
-  {
-    title: "2BHK Apartment in Kochi",
-    location: "Kakkanad, Kochi",
-    price: 5800000,
-    type: "Apartment",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 1100,
-    link: "/property/1",
-  },
-  {
-    title: "Luxury Villa with Pool",
-    location: "Trivandrum",
-    price: 12000000,
-    type: "Villa",
-    image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be",
-    bedrooms: 4,
-    bathrooms: 3,
-    area: 2500,
-    link: "/property/2",
-  },
-  {
-    title: "Premium Plot for Sale",
-    location: "Calicut",
-    price: 3800000,
-    type: "Plot",
-    image: "https://images.unsplash.com/photo-1599420186946-7b1cf394f2e9",
-    bedrooms: 0,
-    bathrooms: 0,
-    area: 5000,
-    link: "/property/3",
-  },
-];
-
 const PropertyList = () => {
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const apiUrl =
+          "http://localhost:8000/api/properties/premium?page=1&page_size=10";
+        console.log(`Fetching properties from: ${apiUrl}`);
+        const response = await fetch(apiUrl);
+
+        console.log("Response status:", response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Properties fetched successfully:", data);
+        setProperties(data);
+      } catch (e) {
+        console.error("Fetch failed:", e);
+        setError(e.message);
+      } finally {
+        setLoading(false);
+        console.log("Finished fetching attempt.");
+      }
+    };
+
+    fetchProperties();
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  if (loading) {
+    return <div className="container py-4">Loading properties...</div>;
+  }
+
+  if (error) {
+    return <div className="container py-4 text-danger">Error: {error}</div>;
+  }
+
   return (
     <div className="container py-4">
       <h2 className="mb-4 fw-bold">Featured Properties</h2>
       <div className="row g-4">
-        {properties.map((property, index) => (
-          <PropertyCard key={index} {...property} />
+        {properties.map((property) => (
+          <PropertyCard
+            key={property._id} // Use a unique ID from the data for the key
+            title={property.title}
+            location={`${property.location.district}, ${property.location.city}`}
+            price={property.price}
+            type={property.category}
+            image={property.location.imageUrl}
+            bedrooms={property.bedrooms}
+            bathrooms={property.bathrooms}
+            area={property.buildUpArea}
+            areaUnit={property.buildUpUnit}
+            link={`/property/${property._id}`}
+          />
         ))}
       </div>
     </div>

@@ -1,5 +1,24 @@
 # React + Vite
+🚀 How to Run the Vite + React Application
 
+Follow these steps to install dependencies and start the development server:
+
+1. Navigate to the project directory
+cd berealestateai-react
+
+2. Install all dependencies
+npm install
+
+3. Start the development server
+npm run dev
+
+
+After running the above command, Vite will start the app and show you a local development URL such as:
+
+http://localhost:5173/
+
+
+Open it in your browser to view the application.
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
