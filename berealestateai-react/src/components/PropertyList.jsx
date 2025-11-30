@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import PropertyCard from "./PropertyCard";
+import LoadingIndicator from "./LoadingIndicator";
 
 const PropertyList = () => {
   const [properties, setProperties] = useState([]);
@@ -36,7 +37,7 @@ const PropertyList = () => {
   }, []); // Empty dependency array ensures this runs only once on mount
 
   if (loading) {
-    return <div className="container py-4">Loading properties...</div>;
+    return <LoadingIndicator />;
   }
 
   if (error) {
