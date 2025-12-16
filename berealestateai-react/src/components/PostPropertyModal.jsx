@@ -78,11 +78,18 @@ const PostPropertyModal = ({ show, handleClose }) => {
     setError(null);
     setSuccess(null);
 
-    // This is a placeholder token. In a real app, you'd get this from your auth context.
-    const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZXI1QGV4YW1wbGUuY29tIiwiZXhwIjoxNzY0NDg3MzAxfQ.nShnhDY24WPbDk5ainxMsDiYyIqS-2Fqo4S3BUtCbeY";
+    // Get the authentication token from session storage
+    const authToken = sessionStorage.getItem("accessToken");
+
+    if (!authToken) {
+      setError("You must be logged in to post a property.");
+      setSubmitting(false);
+      return;
+    }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/post_add_new", {
+      const apiUrl = `${import.meta.env.VITE_BACKEND_API_URL}/api/post_add_new`;
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
