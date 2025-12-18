@@ -25,7 +25,8 @@ const PostPropertyModal = ({ show, handleClose }) => {
       //todo get from map
       latitude: 12.9698,
       longitude: 77.7499,
-      imageUrl: "enter the image url here",
+      imageUrl: "",
+      imageName: "",
     },
     customerDetails: {
       contactNumber: "please enter your contact number",
@@ -39,6 +40,7 @@ const PostPropertyModal = ({ show, handleClose }) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [roomsAndParkingEnabled, setRoomsAndParkingEnabled] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,6 +74,12 @@ const PostPropertyModal = ({ show, handleClose }) => {
     }
   };
 
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -87,16 +95,52 @@ const PostPropertyModal = ({ show, handleClose }) => {
       return;
     }
 
+    let finalFormData = { ...formData };
+
     try {
-      const apiUrl = `${import.meta.env.VITE_BACKEND_API_URL}/api/post_add_new`;
-      const response = await fetch(apiUrl, {
+      // Step 1: Upload image if a file is selected
+      if (imageFile) {
+        const imageUploadFormData = new FormData();
+        imageUploadFormData.append("file", imageFile);
+
+        const imageUploadApiUrl = `${import.meta.env.VITE_BACKEND_API_URL}/api/files/upload-image`;
+        const imageResponse = await fetch(imageUploadApiUrl, {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${authToken}`,
+            // 'Content-Type' is set automatically by the browser for multipart/form-data
+          },
+          body: imageUploadFormData,
+        });
+
+        if (!imageResponse.ok) {
+          const errorData = await imageResponse.json();
+          throw new Error(errorData.detail || `Image upload failed: ${imageResponse.status}`);
+        }
+
+        const imageData = await imageResponse.json();
+        // API returns an object with `url` and `filename`
+        finalFormData = {
+          ...finalFormData,
+          location: {
+            ...finalFormData.location,
+            imageUrl: imageData.url,
+            imageName: imageData.filename,
+          },
+        };
+      }
+
+      // Step 2: Submit the property data with the new image URL
+      const postApiUrl = `${import.meta.env.VITE_BACKEND_API_URL}/api/post_add_new`;
+      const response = await fetch(postApiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "accept": "application/json",
-          "Authorization": `Bearer ${authToken}`,
+          accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(finalFormData),
       });
 
       if (!response.ok) {
@@ -254,7 +298,13 @@ const PostPropertyModal = ({ show, handleClose }) => {
                   <div className="col-md-6 mb-3"><input type="text" className="form-control" name="location.district" value={formData.location.district} onChange={handleChange} placeholder="District / Area" required /></div>
                   <div className="col-md-6 mb-3"><input type="number" step="any" className="form-control" name="location.latitude" value={formData.location.latitude} onChange={handleChange} placeholder="Latitude" /></div>
                   <div className="col-md-6 mb-3"><input type="number" step="any" className="form-control" name="location.longitude" value={formData.location.longitude} onChange={handleChange} placeholder="Longitude" /></div>
-                  <div className="col-12 mb-3"><input type="url" className="form-control" name="location.imageUrl" value={formData.location.imageUrl} onChange={handleChange} placeholder="Image URL" /></div>
+                  <div className="col-12 mb-3">
+                    <label htmlFor="propertyImage" className="form-label">Property Image</label>
+                    <input type="file" className="form-control" id="propertyImage" onChange={handleImageChange} accept="image/jpeg,image/png,image/webp" />
+                    <small className="form-text text-muted">
+                      Upload an image for the property. If you provide a URL below, it will be overwritten by the uploaded image.
+                    </small>
+                  </div>
                 </div>
               </div>
 

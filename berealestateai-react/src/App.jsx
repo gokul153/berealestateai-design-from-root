@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 import Navbar from "./components/navbar";
-import PropertyList from "./components/PropertyList";
+import PropertyListPremium from "./components/PropertyList";
 import PropertyCategories from "./components/propertyCategories";
 import SignUp from "./components/auth/SignUp";
 import SignIn from "./components/auth/SignIn";
+import PropertyListAll from "./components/PropertyListRecent";
 
 export default function App() {
   // Check for token in localStorage to see if user is already logged in
@@ -35,9 +36,10 @@ export default function App() {
             isAuthenticated ? (
               <main style={{ padding: "40px", fontFamily: "Inter, Arial, sans-serif" }}>
                 <h1>Welcome to BeRealEstateAI</h1>
-                <p>Start your Real Journey with Us</p>
+                <p>Start your Real Estate Journey with Us</p>
                 <PropertyCategories />
-                <PropertyList />
+                <PropertyListPremium />
+                <PropertyListAll />
               </main>
             ) : (
               <Navigate to="/signin" />
