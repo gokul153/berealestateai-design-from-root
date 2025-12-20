@@ -1,47 +1,19 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Logo = () => {
   // Define base size - adjust this one value to scale the logo
   const logoSize = 40; // Example size in pixels, good for a navbar
 
   return (
-    <div className="logo-container" style={{ display: 'flex', alignItems: 'center' }}>
-      <svg
-        width={logoSize}
-        height={logoSize}
-        viewBox="0 0 100 100" // Keep viewBox large for coordinate system
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Background Circle
-        <circle cx="50" cy="50" r="48" fill="#004E8F" />
-
-        {/* Outer Circles (like the original design) */}
-        {/* <circle cx="50" cy="50" r="46" fill="none" stroke="#FFFFFF" strokeWidth="1.5" />
-        <circle cx="50" cy="50" r="42" fill="none" stroke="#FFFFFF" strokeWidth="1.5" /> */} 
-
-        {/* --- Logo Content --- */}
-        {/* Removed House Icon */}
-        {/* Removed Star Icon */}
-
-        {/* Main Text: BeRealEstateAi */}
-        {/* Increased font size and simplified 'Ai' color */}
-        <text
-          x="50%"
-          y="50%" // Center vertically now
-          textAnchor="middle"
-          dy=".3em" // Standard vertical centering adjustment
-          fill="#FFF" // Default white
-          fontSize="13" // Increased font size from 12 to 14
-          fontWeight="bold"
-          fontFamily="Arial, sans-serif" // Match navbar font if possible
-        >
-          BeRealEstate
-          <tspan fill="#FFF" dx="1">Ai</tspan> {/* Changed Ai color to white for simplicity */}
-        </text>
-
-        {/* Removed Sub Text */}
-      </svg>
-    </div>
+    <Link to="/" className="logo-container d-flex align-items-center text-decoration-none">
+      <img
+        src="/logo.png" // This path assumes your logo is in the `public` folder
+        alt="BeRealEstateAI Logo"
+        style={{ height: logoSize, width: 'auto' }}
+      />
+      <span className="ms-2 fw-bold text-white fs-5" style={{lineHeight: 1}}>BeRealEstateAi</span>
+    </Link>
   );
 };
 

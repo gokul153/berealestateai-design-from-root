@@ -7,6 +7,7 @@ import PropertyCategories from "./components/propertyCategories";
 import SignUp from "./components/auth/SignUp";
 import SignIn from "./components/auth/SignIn";
 import PropertyListAll from "./components/PropertyListRecent";
+import PropertyDetails from "./components/CommonPropertyDetail";
 
 export default function App() {
   // Check for token in localStorage to see if user is already logged in
@@ -30,6 +31,7 @@ export default function App() {
       <Routes>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn onLoginSuccess={handleLoginSuccess} />} />
+        <Route path="/property/:id" element={<PropertyDetails />} />
         <Route 
           path="/" 
           element={

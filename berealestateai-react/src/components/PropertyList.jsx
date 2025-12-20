@@ -59,7 +59,7 @@ const PropertyListPremium = () => {
             bathrooms={property.bathrooms}
             area={property.buildUpArea}
             areaUnit={property.buildUpUnit}
-            link={`/property/${property._id}`}
+            link={`/property/${property.propertyId}`}
           />
         ))}
       </div>

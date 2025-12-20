@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const PropertyCard = ({
   title,
@@ -35,9 +36,9 @@ const PropertyCard = ({
               {bedrooms} BHK | {bathrooms} Bath | {area} {areaUnit}
             </p>
           )}
-          <a href={link} className="btn btn-outline-primary mt-2">
+          <Link to={link} className="btn btn-outline-primary mt-2">
             View Details
-          </a>
+          </Link>
         </div>
       </div>
     </div>

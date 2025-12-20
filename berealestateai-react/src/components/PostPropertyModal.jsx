@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./PostPropertyForm.css";
 
 const PostPropertyModal = ({ show, handleClose }) => {
@@ -20,7 +20,7 @@ const PostPropertyModal = ({ show, handleClose }) => {
     landUnit: "Cent", // from LandUnitEnum
     description: "Beautiful villa with landscaped garden, modular kitchen, and smart home features.",
     location: {
-      city: "Enter your city",
+      city: "Enter your locality",
       district: "Enter Your District",
       //todo get from map
       latitude: 12.9698,
@@ -79,6 +79,33 @@ const PostPropertyModal = ({ show, handleClose }) => {
       setImageFile(e.target.files[0]);
     }
   };
+
+  // Auto-fetch location when modal opens
+  useEffect(() => {
+    if (show) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setFormData((prev) => ({
+              ...prev,
+              location: {
+                ...prev.location,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              },
+            }));
+          },
+          (error) => {
+            console.log("Location access denied or error, defaulting to 0,0", error);
+            setFormData((prev) => ({
+              ...prev,
+              location: { ...prev.location, latitude: 0, longitude: 0 },
+            }));
+          }
+        );
+      }
+    }
+  }, [show]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -294,10 +321,12 @@ const PostPropertyModal = ({ show, handleClose }) => {
               <div className="form-section">
                 <h5>Location & Media</h5>
                 <div className="row">
-                  <div className="col-md-6 mb-3"><input type="text" className="form-control" name="location.city" value={formData.location.city} onChange={handleChange} placeholder="City" required /></div>
+                  <div className="col-md-6 mb-3"><input type="text" className="form-control" name="location.city" value={formData.location.city} onChange={handleChange} placeholder="Locality" required /></div>
                   <div className="col-md-6 mb-3"><input type="text" className="form-control" name="location.district" value={formData.location.district} onChange={handleChange} placeholder="District / Area" required /></div>
+                  {/* Latitude and Longitude fields hidden and auto-populated via Geolocation API
                   <div className="col-md-6 mb-3"><input type="number" step="any" className="form-control" name="location.latitude" value={formData.location.latitude} onChange={handleChange} placeholder="Latitude" /></div>
                   <div className="col-md-6 mb-3"><input type="number" step="any" className="form-control" name="location.longitude" value={formData.location.longitude} onChange={handleChange} placeholder="Longitude" /></div>
+                  */}
                   <div className="col-12 mb-3">
                     <label htmlFor="propertyImage" className="form-label">Property Image</label>
                     <input type="file" className="form-control" id="propertyImage" onChange={handleImageChange} accept="image/jpeg,image/png,image/webp" />
