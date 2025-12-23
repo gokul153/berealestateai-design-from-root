@@ -3,35 +3,35 @@ import "./PostPropertyForm.css";
 
 const PostPropertyModal = ({ show, handleClose }) => {
   const initialFormData = {
-    title: "Enter the name of the property",
-    category: "Villa/House/Apartment/",
+0    title: "",
+    category: "",
     propertyFor: "Sale",
-    price: 12500000,
-    property_age: 3,
-    waterSource: "Bore Well",
-    furnishing: "Fully Furnished",
-    bedrooms: 0,
-    bathrooms: 0,
-    noOfBalcony: 0,
-    parkingNo: 0,
-    buildUpArea: 2600,
+    price: "",
+    property_age: "",
+    waterSource: "",
+    furnishing: "",
+    bedrooms: "",
+    bathrooms: "",
+    noOfBalcony: "",
+    parkingNo: "",
+    buildUpArea: "",
     buildUpUnit: "Sq.ft", // from BuildUpUnitEnum
-    landArea: 8,
+    landArea: "",
     landUnit: "Cent", // from LandUnitEnum
-    description: "Beautiful villa with landscaped garden, modular kitchen, and smart home features.",
+    description: "",
     location: {
-      city: "Enter your locality",
-      district: "Enter Your District",
+      city: "",
+      district: "",
       //todo get from map
-      latitude: 12.9698,
-      longitude: 77.7499,
+      latitude: 0,
+      longitude: 0,
       imageUrl: "",
       imageName: "",
     },
     customerDetails: {
-      contactNumber: "please enter your contact number",
-      email: "email",
-      extraNotes: "Any additional information you'd like to provide",
+      contactNumber: "",
+      email: "",
+      extraNotes: "",
     },
   };
 
@@ -66,10 +66,10 @@ const PostPropertyModal = ({ show, handleClose }) => {
       // Reset the values when the section is disabled
       setFormData(prev => ({
         ...prev,
-        bedrooms: 0,
-        bathrooms: 0,
-        noOfBalcony: 0,
-        parkingNo: 0,
+        bedrooms: "",
+        bathrooms: "",
+        noOfBalcony: "",
+        parkingNo: "",
       }));
     }
   };
@@ -307,7 +307,7 @@ const PostPropertyModal = ({ show, handleClose }) => {
                   <div className="col-md-6 mb-3">
                     <label className="form-label fw-bold">Land Area</label>
                     <div className="input-group">
-                      <input type="number" className="form-control" name="landArea" value={formData.landArea} onChange={handleChange} placeholder="e.g., 5" />
+                      <input type="number" className="form-control" name="landArea" value={formData.landArea} onChange={handleChange} placeholder="e.g., 5" required={!formData.buildUpArea} />
                       <select className="form-select" name="landUnit" value={formData.landUnit} onChange={handleChange} style={{ flex: "0 0 80px" }}>
                         <option value="Cent">Cent</option>
                         <option value="Acre">Acre</option>

@@ -1,22 +1,29 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PostPropertyModal from "./PostPropertyModal";
 
 const NavbarActions = ({ isAuthenticated, onLogout }) => {
   const [showPostModal, setShowPostModal] = useState(false);
+  const navigate = useNavigate();
+
+  const handlePostClick = () => {
+    if (isAuthenticated) {
+      setShowPostModal(true);
+    } else {
+      navigate("/signin");
+    }
+  };
 
   return (
     <>
       <div className="nav-right d-flex align-items-center">
+        <button className="post-btn me-3" onClick={handlePostClick}>
+          Post property <span className="free">FREE</span>
+        </button>
         {isAuthenticated ? (
-          <>
-            <button className="post-btn me-3" onClick={() => setShowPostModal(true)}>
-              Post property <span className="free">FREE</span>
-            </button>
-            <button className="btn btn-outline-light" onClick={onLogout}>
-              Logout
-            </button>
-          </>
+          <button className="btn btn-outline-light" onClick={onLogout}>
+            Logout
+          </button>
         ) : (
           <>
             <Link to="/signin" className="btn btn-outline-light me-2">

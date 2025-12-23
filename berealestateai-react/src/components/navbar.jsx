@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
 import NavbarSearch from "./NavbarSearch";
 import NavbarActions from "./NavbarActions";
 
@@ -7,37 +9,55 @@ export default function Navbar({ isAuthenticated, onLogout }) {
 
   return (
     <header className="nav-root">
-      <div className="nav-top container-fluid d-flex align-items-center justify-content-between flex-wrap">
-        {/* Left Section */}
-        {/* <div className="nav-left d-flex align-items-center">
-          <Logo />
-        </div> */}
+      {/* Top Bar */}
+      <div className="nav-top container-fluid">
+        {/* Left */}
+        <div className="nav-left">
+          <button
+            className="hamburger"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="menu"
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
 
-        {/* Center Section (Refactored) */}
-        <NavbarSearch />
+        {/* Center (Logo / Brand) */}
+        <div className="nav-center">
+          <span className="brand">BeRealEstateAI</span>
+        </div>
 
-        {/* Right Section (Refactored) */}
-        <NavbarActions isAuthenticated={isAuthenticated} onLogout={onLogout} />
-
-        {/* Hamburger for Mobile (remains for layout control) */}
-        <button
-          className="hamburger"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="menu"
-        >
-          <div className="hb-line" />
-          <div className="hb-line" />
-          <div className="hb-line" />
-        </button>
+        {/* Right (Desktop only) */}
+        <div className="nav-right desktop-only">
+          <NavbarActions
+            isAuthenticated={isAuthenticated}
+            onLogout={onLogout}
+          />
+        </div>
       </div>
 
-      {/* Mobile Menu can be further refactored if it grows in complexity */}
+      {/* Desktop Search */}
+      <div className="desktop-only nav-search">
+        <NavbarSearch />
+      </div>
+
+      {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="mobile-menu bg-light p-3">
-          <a href="#">Post Property</a>
+        <div className="mobile-menu">
+          <NavbarSearch />
+
+          <Link to="/post-property">Post Property</Link>
           <a href="#">Home Loans</a>
           <a href="#">Insights</a>
           <a href="#">Articles</a>
+
+          {isAuthenticated && (
+            <button className="logout-btn" onClick={onLogout}>
+              Logout
+            </button>
+          )}
         </div>
       )}
     </header>

@@ -1,0 +1,94 @@
+.nav-root {
+  background: #0b5ed7;
+  color: white;
+  width: 100%;
+}
+
+/* Top Bar */
+.nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+
+/* Sections */
+.nav-left,
+.nav-center,
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Hamburger */
+.hamburger {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hamburger span {
+  width: 22px;
+  height: 2px;
+  background: white;
+}
+
+/* Desktop Search */
+.nav-search {
+  padding: 10px;
+  background: #0b5ed7;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  background: white;
+  color: black;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-menu a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.logout-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+/* Responsive Rules */
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hamburger {
+    display: none;
+  }
+
+  .desktop-only {
+    display: flex;
+  }
+
+  .mobile-menu {
+    display: none;
+  }
+
+  .nav-top {
+    padding: 10px 24px;
+  }
+}

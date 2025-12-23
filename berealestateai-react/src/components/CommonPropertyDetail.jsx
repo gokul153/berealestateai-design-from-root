@@ -46,32 +46,31 @@ const PropertyDetails = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    const fetchContactDetails = async () => {
-      if (isAuthenticated && id) {
-        try {
-          const token = sessionStorage.getItem("accessToken");
-          const apiUrl = `${import.meta.env.VITE_BACKEND_API_URL}/api/properties/customer-details?property_id=${id}`;
+  const handleViewContact = async () => {
+    if (!isAuthenticated) {
+      navigate("/signin", { state: { message: "Please login to view contact details" } });
+      return;
+    }
 
-          const response = await fetch(apiUrl, {
-            headers: {
-              accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
+    try {
+      const token = sessionStorage.getItem("accessToken");
+      const apiUrl = `${import.meta.env.VITE_BACKEND_API_URL}/api/properties/customer-details?property_id=${id}`;
 
-          if (response.ok) {
-            const data = await response.json();
-            setContactDetails(data);
-          }
-        } catch (e) {
-          console.error("Failed to fetch contact details:", e);
-        }
+      const response = await fetch(apiUrl, {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setContactDetails(data);
       }
-    };
-
-    fetchContactDetails();
-  }, [id, isAuthenticated]);
+    } catch (e) {
+      console.error("Failed to fetch contact details:", e);
+    }
+  };
 
   if (loading) {
     return <LoadingIndicator />;
@@ -289,7 +288,7 @@ const PropertyDetails = () => {
                 </div>
               </div>
 
-              {isAuthenticated ? (
+              {contactDetails ? (
                 <>
                   <div className="d-flex flex-column gap-3">
                     <div className="p-3 bg-light rounded border d-flex justify-content-between align-items-center">
@@ -335,12 +334,12 @@ const PropertyDetails = () => {
                 </>
               ) : (
                 <div className="text-center">
-                  <p className="text-muted small mb-3">
-                    Please sign in to view contact details.
-                  </p>
-                  <Link to="/signin" className="btn btn-outline-primary w-100">
-                    Sign In
-                  </Link>
+                  <button
+                    className="btn btn-primary w-100"
+                    onClick={handleViewContact}
+                  >
+                    View Contact Details
+                  </button>
                 </div>
               )}
             </div>
