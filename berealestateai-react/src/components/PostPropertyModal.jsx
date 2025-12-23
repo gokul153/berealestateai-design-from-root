@@ -3,7 +3,7 @@ import "./PostPropertyForm.css";
 
 const PostPropertyModal = ({ show, handleClose }) => {
   const initialFormData = {
-0    title: "",
+    title: "",
     category: "",
     propertyFor: "Sale",
     price: "",
