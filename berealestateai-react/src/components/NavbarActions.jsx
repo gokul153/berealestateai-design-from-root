@@ -1,23 +1,11 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import PostPropertyModal from "./PostPropertyModal";
+import React from "react";
+import { Link } from "react-router-dom";
 
-const NavbarActions = ({ isAuthenticated, onLogout }) => {
-  const [showPostModal, setShowPostModal] = useState(false);
-  const navigate = useNavigate();
-
-  const handlePostClick = () => {
-    if (isAuthenticated) {
-      setShowPostModal(true);
-    } else {
-      navigate("/signin");
-    }
-  };
-
+const NavbarActions = ({ isAuthenticated, onLogout, onPostClick }) => {
   return (
     <>
       <div className="nav-right d-flex align-items-center">
-        <button className="post-btn me-3" onClick={handlePostClick}>
+        <button className="post-btn me-3" onClick={onPostClick}>
           Post property <span className="free">FREE</span>
         </button>
         {isAuthenticated ? (
@@ -35,9 +23,6 @@ const NavbarActions = ({ isAuthenticated, onLogout }) => {
           </>
         )}
       </div>
-
-      {/* The modal is kept here to be controlled by the "Post property" button */}
-      <PostPropertyModal show={showPostModal} handleClose={() => setShowPostModal(false)} />
     </>
   );
 };

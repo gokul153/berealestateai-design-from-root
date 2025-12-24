@@ -1,11 +1,22 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import NavbarSearch from "./NavbarSearch";
 import NavbarActions from "./NavbarActions";
+import PostPropertyModal from "./PostPropertyModal";
 
 export default function Navbar({ isAuthenticated, onLogout }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showPostModal, setShowPostModal] = useState(false);
+  const navigate = useNavigate();
+
+  const handlePostClick = () => {
+    if (isAuthenticated) {
+      setShowPostModal(true);
+    } else {
+      navigate("/signin");
+    }
+  };
 
   return (
     <header className="nav-root">
@@ -34,6 +45,7 @@ export default function Navbar({ isAuthenticated, onLogout }) {
           <NavbarActions
             isAuthenticated={isAuthenticated}
             onLogout={onLogout}
+            onPostClick={handlePostClick}
           />
         </div>
       </div>
@@ -48,10 +60,19 @@ export default function Navbar({ isAuthenticated, onLogout }) {
         <div className="mobile-menu">
           <NavbarSearch />
 
-          <Link to="/post-property">Post Property</Link>
+          <a href="#" onClick={(e) => { e.preventDefault(); handlePostClick(); }}>
+            Post Property <span className="free">FREE</span>
+          </a>
           <a href="#">Home Loans</a>
           <a href="#">Insights</a>
           <a href="#">Articles</a>
+
+          {!isAuthenticated && (
+            <>
+              <Link to="/signin">Sign In</Link>
+              <Link to="/signup">Sign Up</Link>
+            </>
+          )}
 
           {isAuthenticated && (
             <button className="logout-btn" onClick={onLogout}>
@@ -60,6 +81,9 @@ export default function Navbar({ isAuthenticated, onLogout }) {
           )}
         </div>
       )}
+
+      {/* The modal is kept here to be controlled by the "Post property" button */}
+      <PostPropertyModal show={showPostModal} handleClose={() => setShowPostModal(false)} />
     </header>
   );
 }
