@@ -12,7 +12,7 @@ const PropertyCategories = () => {
     {
       title: "Independent House / Villa",
       properties: "1,000+ Properties",
-      imgSrc: "https://images.unsplash.com/photo-1572120360610-d971b9c79809",
+      imgSrc: "https://real-estate-app-images-2025.s3.us-east-1.amazonaws.com/90835a75-992d-402e-bd0c-91ace242133c.jpg",
       altText: "Independent House / Villa",
     },
     {
