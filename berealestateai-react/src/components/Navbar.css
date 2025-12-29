@@ -92,3 +92,44 @@
     padding: 10px 24px;
   }
 }
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  padding: 10px 24px;
+  background: #fff;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: #0b5ed7;
+}
+
+.free {
+  color: #198754;
+  font-weight: 600;
+  margin-left: 4px;
+}
+@media (min-width: 768px) {
+  .hamburger {
+    display: none;
+  }
+}
+
+/* Mobile view */
+@media (max-width: 767px) {
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+  }
+}

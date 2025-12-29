@@ -54,7 +54,15 @@ export default function Navbar({ isAuthenticated, onLogout }) {
       <div className="desktop-only nav-search">
         <NavbarSearch />
       </div>
-
+      <div className="nav-links">
+  <a href="#" onClick={(e) => { e.preventDefault(); handlePostClick(); }}>
+    Post Property <span className="free">FREE</span>
+  </a>
+  <a href="#">Manage Ads</a>
+  <a href="#">AI Ad Generate</a>
+  <a href="#">Insights</a>
+  <a href="#">Articles</a>
+</div>
       {/* Mobile Menu */}
       {mobileOpen && (
         <div className="mobile-menu">
@@ -63,7 +71,8 @@ export default function Navbar({ isAuthenticated, onLogout }) {
           <a href="#" onClick={(e) => { e.preventDefault(); handlePostClick(); }}>
             Post Property <span className="free">FREE</span>
           </a>
-          <a href="#">Home Loans</a>
+          <a href="#">Manage Adds</a>
+           <a href="#">AI Ad Generate</a>
           <a href="#">Insights</a>
           <a href="#">Articles</a>
 
