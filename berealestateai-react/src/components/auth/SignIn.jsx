@@ -63,6 +63,9 @@ export default function SignIn({ onLoginSuccess }) {
           <form onSubmit={handleSubmit}>
             <div className="mb-3"><input type="email" className="form-control" placeholder="Email (as username)" value={username} onChange={(e) => setUsername(e.target.value)} /></div>
             <div className="mb-3"><input type="password" placeholder="Password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+            <div className="mb-3 text-end">
+              <Link to="/forgot-password" className="text-decoration-none">Forgot Password?</Link>
+            </div>
             <button type="submit" className="btn btn-primary w-100" disabled={loading}>{loading ? "Signing In..." : "Sign In"}</button>
           </form>
            <p className="mt-3 text-center">
