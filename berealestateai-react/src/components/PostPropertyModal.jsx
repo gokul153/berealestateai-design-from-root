@@ -172,7 +172,18 @@ const PostPropertyModal = ({ show, handleClose }) => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+        let errorMessage = "Something went wrong";
+        if (errorData.detail) {
+          if (Array.isArray(errorData.detail)) {
+            errorMessage = errorData.detail.map((err) => {
+              const field = err.loc && err.loc.length > 0 ? err.loc[err.loc.length - 1] : "Field";
+              return `${field}: ${err.msg}`;
+            }).join(", ");
+          } else {
+            errorMessage = errorData.detail;
+          }
+        }
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
