@@ -73,23 +73,84 @@ export default function SignUp() {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <h2>Sign Up</h2>
-          <p>Create your account to get started.</p>
-          {error && <div className="alert alert-danger">{error}</div>}
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3"><input type="email" className="form-control" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-            <div className="mb-3"><input type="tel" className="form-control" placeholder="Mobile Number" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value)} /></div>
-            <div className="mb-3"><input type="password" placeholder="Password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
-            <button type="submit" className="btn btn-primary w-100" disabled={loading}>{loading ? "Signing Up..." : "Sign Up"}</button>
-          </form>
-          <p className="mt-3 text-center">
-            Already have an account? <Link to="/signin">Sign In</Link>
-          </p>
+    <div style={{ height: "74vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <div className="shadow-lg rounded-4 overflow-hidden bg-white" style={{ width: "60%" }} >
+        <div className="row g-0">
+          <div className="col-md-6 d-none d-md-flex">
+            <div className="w-100 d-flex align-items-center justify-content-center" >
+              <img
+                src="public/Blue-logo-final.png"
+                alt="BeRealEstate AI"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain"
+                }} />
+            </div>
+          </div>
+
+          {/* RIGHT SIDE – SIGN UP FORM */}
+          <div className="col-md-6 d-flex align-items-center justify-content-center p-5">
+            <div style={{ width: "100%", maxWidth: "360px" }}>
+
+              <h3 className="fw-bold mb-1">BeRealEstate AI 🌆</h3>
+              <p className="text-muted mb-4">Create your account to get started</p>
+
+              {error && (
+                <div className="alert alert-danger">{error}</div>
+              )}
+
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <input
+                    type="email"
+                    className="form-control form-control-lg"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <input
+                    type="tel"
+                    className="form-control form-control-lg"
+                    placeholder="Mobile Number"
+                    value={mobileNumber}
+                    onChange={(e) => setMobileNumber(e.target.value)}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <input
+                    type="password"
+                    className="form-control form-control-lg"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-lg w-100"
+                  disabled={loading} >
+                  {loading ? "Signing Up..." : "Sign Up"}
+                </button>
+              </form>
+
+              <p className="mt-4 text-center">
+                Already have an account?{" "}
+                <Link to="/signin" className="fw-semibold">
+                  Sign In
+                </Link>
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
+
   );
 }
