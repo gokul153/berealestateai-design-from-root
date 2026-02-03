@@ -15,8 +15,8 @@ export default function ForgotPassword() {
 
           <div className="bg-light rounded-3 p-4 mb-4">
             <p className="mb-2 fw-semibold">📩 Contact Support</p>
-            <a href="mailto:supportberealestateai@gmail.com"className="fw-bold text-decoration-none fs-6">
-              supportberealestateai@gmail.com
+            <a href="mailto:customerberealestateai@gmail.com"className="fw-bold text-decoration-none fs-6">
+              customerberealestateai@gmail.com
             </a>
             <p className="text-muted mt-2 mb-0" style={{ fontSize: "14px" }}>
               Please include your registered email or mobile number.
