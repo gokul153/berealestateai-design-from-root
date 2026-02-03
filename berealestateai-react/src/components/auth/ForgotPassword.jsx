@@ -27,7 +27,7 @@ export default function ForgotPassword() {
             <Link to="/signin" className="btn btn-outline-primary">
               Back to Sign In
             </Link>
-            <a href="mailto:supportberealestateai@gmail.com" className="btn btn-primary">
+            <a href="mailto:customerberealestateai@gmail.com" className="btn btn-primary">
               Email Support
             </a>
           </div>
