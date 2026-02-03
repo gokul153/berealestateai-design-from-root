@@ -54,25 +54,76 @@ export default function SignIn({ onLoginSuccess }) {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <h2>Sign In</h2>
-          <p>Welcome back! Please enter your details.</p>
-          {error && <div className="alert alert-danger">{error}</div>}
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3"><input type="email" className="form-control" placeholder="Email (as username)" value={username} onChange={(e) => setUsername(e.target.value)} /></div>
-            <div className="mb-3"><input type="password" placeholder="Password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
-            <div className="mb-3 text-end">
-              <Link to="/forgot-password" className="text-decoration-none">Forgot Password?</Link>
+    <div style={{height: "74vh", display: "flex",justifyContent: "center",alignItems: "center"}}>
+      <div className="shadow-lg rounded-4 overflow-hidden bg-white"style={{ width: "60%" }}>
+        <div className="row g-0">
+          <div className="col-md-6 d-none d-md-flex">
+            <div className="w-100 d-flex align-items-center justify-content-center">
+              <img src="public/Blue-logo-final.png" alt="BeRealEstate AI"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain"
+                }}
+              />
             </div>
-            <button type="submit" className="btn btn-primary w-100" disabled={loading}>{loading ? "Signing In..." : "Sign In"}</button>
-          </form>
-           <p className="mt-3 text-center">
-            Don't have an account? <Link to="/signup">Sign Up</Link>
-          </p>
+          </div>
+
+          <div className="col-md-6 d-flex align-items-center justify-content-center p-5">
+            <div style={{ width: "100%", maxWidth: "360px" }}>
+              <h3 className="fw-bold mb-1">BeRealEstate AI <span role="img">🌆</span></h3>
+              <p className="text-muted mb-4">Sign in to continue</p>
+
+              {error && (
+                <div className="alert alert-danger">
+                  Invalid credentials
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <input
+                    type="email"
+                    className="form-control form-control-lg"
+                    placeholder="Email"
+                    value={username}
+                    required
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <input
+                    type="password"
+                    className="form-control form-control-lg"
+                    placeholder="Password"
+                    value={password}
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3 text-end">
+                  <Link to="/forgot-password" className="text-decoration-none">Forgot Password?</Link>
+                </div>
+
+                <button type="submit"className="btn btn-primary btn-lg w-100">
+                  Sign In
+                </button>
+              </form>
+
+              <p className="mt-4 text-center">
+                Don’t have an account?{" "}
+                <Link to="/signup" className="fw-semibold">
+                  Sign Up
+                </Link>
+              </p>
+
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
+
   );
 }
