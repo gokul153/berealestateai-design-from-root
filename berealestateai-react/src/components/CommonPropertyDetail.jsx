@@ -130,6 +130,15 @@ const PropertyDetails = () => {
     location,
   } = property;
 
+  const detailsList = [
+    { label: "Property Age", value: property_age, unit: "Years" },
+    { label: "Furnishing", value: furnishing },
+    { label: "Water Source", value: waterSource },
+    { label: "Balconies", value: noOfBalcony },
+    { label: "Parking Spaces", value: parkingNo },
+    { label: "Land Area", value: landArea, unit: landUnit },
+  ];
+
   const handleCopy = (text) => {
     if (text) {
       navigator.clipboard.writeText(text);
@@ -229,35 +238,21 @@ const PropertyDetails = () => {
             <div className="card shadow-sm border-0">
               <div className="card-body p-0">
                 <table className="table table-striped mb-0">
-                  <tbody>
-                    <tr>
-                      <td className="text-muted ps-4 py-3" style={{ width: "40%" }}>
-                        Property Age
-                      </td>
-                      <td className="fw-medium py-3">{property_age} Years</td>
-                    </tr>
-                    <tr>
-                      <td className="text-muted ps-4 py-3">Furnishing</td>
-                      <td className="fw-medium py-3">{furnishing}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-muted ps-4 py-3">Water Source</td>
-                      <td className="fw-medium py-3">{waterSource}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-muted ps-4 py-3">Balconies</td>
-                      <td className="fw-medium py-3">{noOfBalcony}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-muted ps-4 py-3">Parking Spaces</td>
-                      <td className="fw-medium py-3">{parkingNo}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-muted ps-4 py-3">Land Area</td>
-                      <td className="fw-medium py-3">
-                        {landArea} {landUnit}
-                      </td>
-                    </tr>
+                  <tbody>                    {detailsList.map(({ label, value, unit }) =>
+                      (value || value === 0) ? (
+                        <tr key={label}>
+                          <td
+                            className="text-muted ps-4 py-3"
+                            style={{ width: "40%" }}
+                          >
+                            {label}
+                          </td>
+                          <td className="fw-medium py-3">
+                            {value} {unit || ""}
+                          </td>
+                        </tr>
+                      ) : null
+                    )}
                   </tbody>
                 </table>
               </div>
