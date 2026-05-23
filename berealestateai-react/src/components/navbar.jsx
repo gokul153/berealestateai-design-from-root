@@ -59,7 +59,7 @@ export default function Navbar({ isAuthenticated, onLogout }) {
     Post Property <span className="free">FREE</span>
   </a>
   <a href="#">Manage Ads</a>
-  <a href="#">AI Ad Generate</a>
+  <Link to="/ai-ad-generate">AI Ad Generate</Link>
   <a href="#">Insights</a>
   <a href="#">Articles</a>
 </div>
@@ -72,7 +72,7 @@ export default function Navbar({ isAuthenticated, onLogout }) {
             Post Property <span className="free">FREE</span>
           </a>
           <a href="#">Manage Adds</a>
-           <a href="#">AI Ad Generate</a>
+          <Link to="/ai-ad-generate" onClick={() => setMobileOpen(false)}>AI Ad Generate</Link>
           <a href="#">Insights</a>
           <a href="#">Articles</a>
 

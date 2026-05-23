@@ -10,6 +10,7 @@ import PropertyListAll from "./components/PropertyListRecent";
 import PropertyDetails from "./components/CommonPropertyDetail";
 import PostPropertyForm from "./components/PostPropertyForm";
 import ForgotPassword from "./components/auth/ForgotPassword";
+import AIAdGenerate from "./components/AIAdGenerate";
 
 export default function App() {
   // Check for token in sessionStorage to see if user is already logged in
@@ -55,6 +56,16 @@ export default function App() {
               <PostPropertyForm />
             ) : (
               <Navigate to="/signin" state={{ from: "/post-property", message: "Please login to post a property" }} />
+            )
+          }
+        />
+        <Route
+          path="/ai-ad-generate"
+          element={
+            isAuthenticated ? (
+              <AIAdGenerate />
+            ) : (
+              <Navigate to="/signin" state={{ from: "/ai-ad-generate", message: "Please login to generate AI ads" }} />
             )
           }
         />

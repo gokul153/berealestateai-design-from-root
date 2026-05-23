@@ -12,7 +12,6 @@ npm install
 3. Start the development server
 npm run dev
 
-
 After running the above command, Vite will start the app and show you a local development URL such as:
 
 http://localhost:5173/
