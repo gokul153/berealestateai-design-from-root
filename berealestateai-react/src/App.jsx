@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 
 import Navbar from "./components/navbar";
 import PropertyListPremium from "./components/PropertyList";
@@ -10,26 +10,38 @@ import PropertyListAll from "./components/PropertyListRecent";
 import PropertyDetails from "./components/CommonPropertyDetail";
 import PostPropertyForm from "./components/PostPropertyForm";
 import ForgotPassword from "./components/auth/ForgotPassword";
-import AIAdGenerate from "./components/AIAdGenerate";
+import AIAdGenerate from "./components/AIAdGenerate"; 
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./components/admin/AdminDashboard"; // This will serve as the Orders page
+import AuditLogs from "./components/admin/AuditLogs";
+import LoyaltyPoints from "./components/admin/LoyaltyPoints";
+import CustomerOnboarding from "./components/admin/CustomerOnboarding";
 
 export default function App() {
   // Check for token in sessionStorage to see if user is already logged in
   const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("accessToken"));
+  const [isAdmin, setIsAdmin] = useState(sessionStorage.getItem("isAdmin") === "true");
   const navigate = useNavigate();
+  const location = useLocation();
+  const showMainNavbar = !location.pathname.startsWith('/admin');
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (userIsAdmin) => {
     setIsAuthenticated(true);
+    setIsAdmin(userIsAdmin);
   };
 
   const handleLogout = () => {
     sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("tokenType");
+    sessionStorage.removeItem("isAdmin");
     setIsAuthenticated(false);
+    setIsAdmin(false);
     navigate("/signin");
   };
 
   return (
     <div>
-      <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+      {showMainNavbar && <Navbar isAuthenticated={isAuthenticated} isAdmin={isAdmin} onLogout={handleLogout} />}
 
       <Routes>
         <Route path="/signup" element={<SignUp />} />
@@ -69,6 +81,19 @@ export default function App() {
             )
           }
         />
+        {/* Admin Protected Routes */}
+        <Route
+          path="/admin"
+          element={
+            isAuthenticated && isAdmin ? <AdminLayout onLogout={handleLogout} /> : <Navigate to="/signin" replace />
+          }
+        >
+            <Route index element={<Navigate to="orders" replace />} /> 
+            <Route path="orders" element={<AdminDashboard onLogout={handleLogout} />} />
+            <Route path="audit-logs" element={<AuditLogs onLogout={handleLogout} />} />
+            <Route path="loyalty-points" element={<LoyaltyPoints onLogout={handleLogout} />} />
+            <Route path="customer-onboarding" element={<CustomerOnboarding onLogout={handleLogout} />} />
+        </Route>
       </Routes>
     </div>
   );

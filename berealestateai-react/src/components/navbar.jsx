@@ -5,7 +5,7 @@ import NavbarSearch from "./NavbarSearch";
 import NavbarActions from "./NavbarActions";
 import PostPropertyModal from "./PostPropertyModal";
 
-export default function Navbar({ isAuthenticated, onLogout }) {
+export default function Navbar({ isAuthenticated, isAdmin, onLogout }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showPostModal, setShowPostModal] = useState(false);
   const navigate = useNavigate();
@@ -61,6 +61,9 @@ export default function Navbar({ isAuthenticated, onLogout }) {
   <a href="#">Manage Ads</a>
   <Link to="/ai-ad-generate">AI Ad Generate</Link>
   <a href="#">Insights</a>
+  {isAuthenticated && isAdmin && (
+    <Link to="/admin/orders">bekrishnafoods management portal</Link>
+  )}
   <a href="#">Articles</a>
 </div>
       {/* Mobile Menu */}
@@ -73,6 +76,9 @@ export default function Navbar({ isAuthenticated, onLogout }) {
           </a>
           <a href="#">Manage Adds</a>
           <Link to="/ai-ad-generate" onClick={() => setMobileOpen(false)}>AI Ad Generate</Link>
+          {isAuthenticated && isAdmin && (
+            <Link to="/admin/orders" onClick={() => setMobileOpen(false)}>bekrishnafoods management portal</Link>
+          )}
           <a href="#">Insights</a>
           <a href="#">Articles</a>
 

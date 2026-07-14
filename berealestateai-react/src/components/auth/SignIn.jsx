@@ -2,33 +2,28 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function SignIn({ onLoginSuccess }) {
-  const [username, setUsername] = useState(""); // API expects 'username'
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  //todo need to design the sign in page
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const details = {
-        username: username,
-        password: password,
-      };
-
-      const formBody = Object.keys(details)
-        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key]))
-        .join('&');
-
+      // 1. Map the data into URLSearchParams to create standard Form Data
+      const formData = new URLSearchParams();
+      formData.append("username", email); // Map your 'email' state to the required 'username' key
+      formData.append("password", password);
       const response = await fetch(`${import.meta.env.VITE_BACKEND_API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: formBody,
+        body: formData,
       });
 
       if (!response.ok) {
@@ -37,14 +32,27 @@ export default function SignIn({ onLoginSuccess }) {
       }
 
       const data = await response.json();
-      console.log("Login Response:", data); // Logging the response as requested
-      
-      // Store token and update app state
+
+      // Store token and role info in session storage
       sessionStorage.setItem("accessToken", data.access_token);
-      onLoginSuccess();
-      
-      // Navigate to the main app page
-      navigate("/");
+      sessionStorage.setItem("tokenType", data.token_type);
+
+      const isAdmin = data.is_admin === true;
+      if (isAdmin) {
+        sessionStorage.setItem("isAdmin", "true");
+      } else {
+        sessionStorage.removeItem("isAdmin");
+      }
+
+      // Notify the parent App component of the login status
+      onLoginSuccess(isAdmin);
+
+      // Navigate based on user role
+      if (isAdmin) {
+        navigate("/admin");
+      } else {
+        navigate("/"); // Navigate regular users to the homepage
+      }
 
     } catch (err) {
       setError(err.message);
@@ -58,8 +66,8 @@ export default function SignIn({ onLoginSuccess }) {
       <div className="shadow-lg rounded-4 overflow-hidden bg-white"style={{ width: "60%" }}>
         <div className="row g-0">
           <div className="col-md-6 d-none d-md-flex">
-            <div className="w-100 d-flex align-items-center justify-content-center">
-              <img src="public/Blue-logo-final.png" alt="BeRealEstate AI"
+            <div className="w-100 d-flex align-items-center justify-content-center"> 
+              <img src="/Blue-logo-final.png" alt="BeRealEstate AI"
                 style={{
                   width: "100%",
                   height: "100%",
@@ -75,9 +83,7 @@ export default function SignIn({ onLoginSuccess }) {
               <p className="text-muted mb-4">Sign in to continue</p>
 
               {error && (
-                <div className="alert alert-danger">
-                  Invalid credentials
-                </div>
+                <div className="alert alert-danger">{error}</div>
               )}
 
               <form onSubmit={handleSubmit}>
@@ -86,9 +92,9 @@ export default function SignIn({ onLoginSuccess }) {
                     type="email"
                     className="form-control form-control-lg"
                     placeholder="Email"
-                    value={username}
+                    value={email}
                     required
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
@@ -106,8 +112,11 @@ export default function SignIn({ onLoginSuccess }) {
                   <Link to="/forgot-password" className="text-decoration-none">Forgot Password?</Link>
                 </div>
 
-                <button type="submit"className="btn btn-primary btn-lg w-100">
-                  Sign In
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-lg w-100"
+                  disabled={loading}>
+                  {loading ? "Signing In..." : "Sign In"}
                 </button>
               </form>
 
