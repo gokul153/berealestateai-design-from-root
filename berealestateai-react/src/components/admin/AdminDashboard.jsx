@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 
-// Helper to get default dates (e.g., last 30 days)
+// Helper to get default dates
 const getTodaysDate = () => new Date().toISOString().split('T')[0];
-const getLastMonthDate = () => {
+const getYesterdaysDate = () => {
   const d = new Date();
-  d.setDate(d.getDate() - 30);
+  d.setDate(d.getDate() - 1);
   return d.toISOString().split('T')[0];
 };
 
@@ -14,13 +14,17 @@ export default function AdminDashboard({ onLogout }) {
   const [error, setError] = useState("");
 
   // Filter States
-  const [fromDate, setFromDate] = useState(getLastMonthDate());
+  const [fromDate, setFromDate] = useState(getYesterdaysDate());
   const [toDate, setToDate] = useState(getTodaysDate());
   const [userId, setUserId] = useState("");
+  const [routeId, setRouteId] = useState("");
 
   // Pagination States
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+
+  // State for individual order status updates
+  const [updatingStatus, setUpdatingStatus] = useState({});
 
   // Use useCallback so we don't recreate this function on every render
   const fetchOrders = useCallback(async (currentPage, isNewFilter = false) => {
@@ -42,6 +46,7 @@ export default function AdminDashboard({ onLogout }) {
       if (fromDate) params.append("from_date", fromDate);
       if (toDate) params.append("to_date", toDate);
       if (userId) params.append("user_id", userId);
+      if (routeId) params.append("route_id", routeId);
 
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_API_URL}/api/admin/orders?${params.toString()}`,
@@ -76,7 +81,42 @@ export default function AdminDashboard({ onLogout }) {
     } finally {
       setLoading(false);
     }
-  }, [fromDate, toDate, userId, onLogout]);
+  }, [fromDate, toDate, userId, routeId, onLogout]);
+
+  const handleUpdateStatus = async (orderId, newStatus) => {
+    setUpdatingStatus(prev => ({ ...prev, [orderId]: true }));
+    setError(""); // Clear previous general errors
+
+    try {
+      const token = sessionStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error("Authentication token not found. Please log in.");
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_API_URL}/api/admin/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ detail: `Failed to update status to ${newStatus}` }));
+        throw new Error(errorData.detail || `Failed to update status to ${newStatus}`);
+      }
+
+      const updatedOrder = await response.json();
+
+      // Update the order in the local state
+      setOrders(prevOrders => prevOrders.map(order => order.order_id === orderId ? { ...order, status: updatedOrder.status } : order));
+    } catch (err) {
+      setError(err.message); // Show error at the top of the page
+    } finally {
+      setUpdatingStatus(prev => ({ ...prev, [orderId]: false }));
+    }
+  };
 
   // Initial load and pagination trigger
   useEffect(() => {
@@ -99,6 +139,21 @@ export default function AdminDashboard({ onLogout }) {
   const formatItemName = (name) => {
     if (!name) return "";
     return name.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+  };
+
+  const getStatusBadgeClass = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'confirmed':
+      case 'delivered':
+        return 'bg-success';
+      case 'cancelled':
+        return 'bg-danger';
+      case 'pending':
+      case 'draft':
+        return 'bg-warning text-dark';
+      default:
+        return 'bg-secondary';
+    }
   };
 
   return (
@@ -142,6 +197,14 @@ export default function AdminDashboard({ onLogout }) {
                   onChange={e => setUserId(e.target.value)} 
                 />
               </div>
+              <div className="col-12 mt-2">
+                <label className="form-label small text-muted mb-1">Route</label>
+                <select className="form-select form-select-sm rounded-3" value={routeId} onChange={e => setRouteId(e.target.value)}>
+                  <option value="">All Routes</option>
+                  <option value="1">Route 1 :- Kazhakuttam Route</option>
+                  <option value="2">Route 2 :- Nallanjara Route</option>
+                </select>
+              </div>
             </div>
             <button type="submit" className="btn btn-dark btn-sm w-100 mt-3 rounded-pill" disabled={loading}>
               {loading && page === 1 ? 'Applying Filters...' : 'Apply Filters'}
@@ -158,23 +221,32 @@ export default function AdminDashboard({ onLogout }) {
 
       {/* --- Orders List --- */}
       <div className="d-flex flex-column gap-3">
-        {orders.map((order) => (
-          <div key={order.orderId} className="card shadow-sm border-0 rounded-4 overflow-hidden">
+        {orders.map((order) => {
+          const isUpdating = updatingStatus[order.order_id];
+          return (
+          <div key={order.order_id} className="card shadow-sm border-0 rounded-4 overflow-hidden">
             
             {/* Header: Order ID & Status */}
-            <div className="card-header bg-white border-bottom-0 pt-3 pb-0 d-flex justify-content-between align-items-center">
-              <span className="text-muted small font-monospace">#{order.orderId?.substring(0, 8)}</span>
-              <span className={`badge ${order.status?.toLowerCase() === 'completed' ? 'bg-success' : 'bg-warning text-dark'}`}>
+            <div className="card-header bg-white border-bottom-0 pt-3 pb-0 d-flex justify-content-end align-items-center">
+              <span className={`badge ${getStatusBadgeClass(order.status)}`}>
                 {order.status?.toUpperCase() || 'PENDING'}
               </span>
             </div>
             
             <div className="card-body pt-2 pb-2">
-              {/* Customer ID */}
-              <h5 className="card-title fw-bold mb-3 text-truncate text-primary">
-                <i className="bi bi-person-circle me-2"></i>
-                {order.userId || 'Unknown User'}
+              {/* Customer Info */}
+              <h5 className="card-title fw-bold mb-1 text-truncate text-primary">
+                <i className="bi bi-shop me-2"></i>
+                {order.customer_shop_name || order.user_name || 'Unknown Shop'}
               </h5>
+              <p className="card-text text-muted small mb-2">
+                <i className="bi bi-person-fill me-2"></i>{order.user_name} ({order.user_id})
+              </p>
+              {order.user_address && (
+                <p className="card-text small bg-light p-2 rounded-3 mb-3">
+                  <i className="bi bi-geo-alt-fill me-2"></i>{order.user_address}
+                </p>
+              )}
               
               {/* Items List */}
               <div className="bg-light rounded-3 p-2 mb-3">
@@ -193,19 +265,50 @@ export default function AdminDashboard({ onLogout }) {
                 )}
               </div>
 
-              {/* Badges for Free Order & Date */}
+              {/* Badges for Route, Free Order & Date */}
               <div className="d-flex justify-content-between align-items-center mt-2">
                 <span className="text-muted small">
                   {new Date(order.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </span>
-                {order.is_free_order && (
-                  <span className="badge bg-info text-dark rounded-pill">Free Order</span>
-                )}
+                <div>
+                  {order.route_id && <span className="badge bg-dark me-1">Route {order.route_id}</span>}
+                  {order.is_free_order && (
+                    <span className="badge bg-info text-dark rounded-pill">Free Order</span>
+                  )}
+                </div>
               </div>
             </div>
             
+            {/* Action Buttons */}
+            <div className="card-footer bg-white border-top-0 pt-0 pb-3 d-flex justify-content-end gap-2">
+              <button
+                className="btn btn-sm btn-outline-success d-flex align-items-center"
+                onClick={() => handleUpdateStatus(order.order_id, 'confirmed')}
+                disabled={isUpdating || order.status === 'confirmed' || order.status === 'cancelled'}
+              >
+                {isUpdating ? (
+                  <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                ) : (
+                  <i className="bi bi-check-circle-fill me-1"></i>
+                )}
+                Confirm
+              </button>
+              <button
+                className="btn btn-sm btn-outline-danger d-flex align-items-center"
+                onClick={() => handleUpdateStatus(order.order_id, 'cancelled')}
+                disabled={isUpdating || order.status === 'cancelled'}
+              >
+                {isUpdating ? (
+                  <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                ) : (
+                  <i className="bi bi-x-circle-fill me-1"></i>
+                )}
+                Cancel
+              </button>
+            </div>
           </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Loading Spinner */}
