@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 
 export default function CustomerOnboarding({ onLogout }) {
   const initialFormState = {
-    whatsapp_id: "",
+    country_code: "91",
+    phone_number: "",
     name: "",
     customer_shop_name: "",
     address: "",
     latitude: "",
     longitude: "",
     route_id: "1",
+    eligible_for_loyalty: true,
+    reminder_type: "daily",
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -19,7 +22,10 @@ export default function CustomerOnboarding({ onLogout }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: e.target.type === 'checkbox' ? e.target.checked : value 
+    }));
   };
 
   const handleGetLocation = () => {
@@ -61,14 +67,28 @@ export default function CustomerOnboarding({ onLogout }) {
     setError("");
     setSuccess("");
 
+    if (!formData.name.trim()) {
+      setError("Customer Name is required.");
+      setLoading(false);
+      return;
+    }
+    if (!/^\d{10}$/.test(formData.phone_number.trim())) {
+      setError("WhatsApp number must be 10 digits.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const token = sessionStorage.getItem("accessToken");
       if (!token) {
         throw new Error("Authentication token not found. Please log in.");
       }
 
+      const { country_code, phone_number, ...restOfData } = formData;
+
       const payload = {
-        ...formData,
+        ...restOfData,
+        whatsapp_id: `${country_code}${phone_number}`,
         customer_shop_name: formData.customer_shop_name || formData.name,
         latitude: parseFloat(formData.latitude) || 0,
         longitude: parseFloat(formData.longitude) || 0,
@@ -118,13 +138,20 @@ export default function CustomerOnboarding({ onLogout }) {
           <form onSubmit={handleSubmit} noValidate>
             <div className="row g-3">
               <div className="col-md-6">
-                <label className="form-label fw-bold">WhatsApp ID (with country code)</label>
-                <input type="tel" className="form-control" name="whatsapp_id" value={formData.whatsapp_id} onChange={handleChange} placeholder="e.g., 919876543210" required />
-              </div>
-              <div className="col-md-6">
                 <label className="form-label fw-bold">Customer Name</label>
                 <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} placeholder="e.g., John Doe" required />
               </div>
+
+              <div className="col-md-6">
+                <label className="form-label fw-bold">WhatsApp Number</label>
+                <div className="input-group">
+                  <select className="form-select" name="country_code" value={formData.country_code} onChange={handleChange} style={{ maxWidth: '85px' }}>
+                    <option value="91">+91</option>
+                  </select>
+                  <input type="tel" className="form-control" name="phone_number" value={formData.phone_number} onChange={handleChange} placeholder="9876543210" required pattern="\d{10}" title="Please enter a 10-digit phone number." />
+                </div>
+              </div>
+
               <div className="col-12">
                 <label className="form-label fw-bold">Shop Name</label>
                 <input type="text" className="form-control" name="customer_shop_name" value={formData.customer_shop_name} onChange={handleChange} placeholder="Defaults to customer name if empty" />
@@ -133,11 +160,22 @@ export default function CustomerOnboarding({ onLogout }) {
                 <label className="form-label fw-bold">Address</label>
                 <textarea className="form-control" name="address" value={formData.address} onChange={handleChange} rows="3" placeholder="Full delivery address" required></textarea>
               </div>
-              <div className="col-12">
+              
+              <div className="col-md-6">
                 <label className="form-label fw-bold">Route</label>
                 <select className="form-select" name="route_id" value={formData.route_id} onChange={handleChange} required>
                   <option value="1">Route 1 :- Kazhakuttam Route</option>
                   <option value="2">Route 2 :- Nallanjara Route</option>
+                </select>
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label fw-bold">Reminder Type</label>
+                <select className="form-select" name="reminder_type" value={formData.reminder_type} onChange={handleChange} required>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="random">Random</option>
+                  <option value="none">None</option>
                 </select>
               </div>
 
@@ -154,6 +192,13 @@ export default function CustomerOnboarding({ onLogout }) {
                   </button>
                   <input type="number" step="any" className="form-control" placeholder="Latitude" value={formData.latitude} onChange={handleChange} name="latitude" required />
                   <input type="number" step="any" className="form-control" placeholder="Longitude" value={formData.longitude} onChange={handleChange} name="longitude" required />
+                </div>
+              </div>
+
+              <div className="col-12">
+                <div className="form-check form-switch mt-2">
+                  <input className="form-check-input" type="checkbox" role="switch" id="eligibleForLoyalty" name="eligible_for_loyalty" checked={formData.eligible_for_loyalty} onChange={handleChange} />
+                  <label className="form-check-label" htmlFor="eligibleForLoyalty">Eligible for Loyalty Program</label>
                 </div>
               </div>
             </div>
