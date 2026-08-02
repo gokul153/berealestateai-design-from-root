@@ -38,9 +38,25 @@ export default function AdminNavbar({ onLogout }) {
             <li className="nav-item">
               <NavLink 
                 className="nav-link"
+                to="/admin/loyalty-status"
+              >
+                Loyalty Status
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink 
+                className="nav-link"
                 to="/admin/customer-onboarding"
               >
                 Customer Onboarding
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink 
+                className="nav-link"
+                to="/admin/manual-order"
+              >
+                Manual Order
               </NavLink>
             </li>
           </ul>
