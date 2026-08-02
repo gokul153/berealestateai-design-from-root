@@ -91,7 +91,22 @@ export default function LoyaltyStatus({ onLogout }) {
         {statuses.map((status) => {
           const ordersToGo = status.threshold - status.order_count;
           const isNearThreshold = ordersToGo > 0 && ordersToGo < 5;
-          const itemClass = isNearThreshold ? 'list-group-item-warning' : '';
+
+          let isNearExpiry = false;
+          if (status.created_at) {
+            const createdAtDate = new Date(status.created_at);
+            const now = new Date();
+            const diffTime = now.getTime() - createdAtDate.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            isNearExpiry = diffDays >= 6 && ordersToGo > 0;
+          }
+
+          let itemClass = '';
+          if (isNearExpiry) {
+            itemClass = 'list-group-item-danger';
+          } else if (isNearThreshold) {
+            itemClass = 'list-group-item-warning';
+          }
 
           return (
             <div key={status.user_id} className={`list-group-item list-group-item-action d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 ${itemClass}`}>
@@ -99,6 +114,10 @@ export default function LoyaltyStatus({ onLogout }) {
                 <h5 className="mb-1 fw-bold">{status.customer_shop_name || status.user_name}</h5>
                 <p className="mb-1 text-muted small">{status.user_name} ({status.user_id})</p>
                 {renderProgressBar(status.order_count, status.threshold)}
+                <div className="d-flex justify-content-between text-muted small mt-2" style={{ fontSize: '0.8rem' }}>
+                  <span>Started: {status.created_at ? new Date(status.created_at).toLocaleDateString() : 'N/A'}</span>
+                  <span>Last Update: {status.updated_at ? new Date(status.updated_at).toLocaleDateString() : 'N/A'}</span>
+                </div>
               </div>
               <div className="text-md-end">
                 <p className="fw-bold mb-0">{ordersToGo > 0 ? `${ordersToGo} to go` : 'Reward Ready!'}</p>
