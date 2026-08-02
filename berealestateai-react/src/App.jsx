@@ -15,8 +15,10 @@ import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./components/admin/AdminDashboard"; // This will serve as the Orders page
 import AuditLogs from "./components/admin/AuditLogs";
 import LoyaltyPoints from "./components/admin/LoyaltyPoints";
+import LoyaltyStatus from "./components/admin/LoyaltyStatus";
 import CustomerOnboarding from "./components/admin/CustomerOnboarding";
 
+import ManualOrder from "./components/admin/ManualOrder"; // Import the new component
 export default function App() {
   // Check for token in sessionStorage to see if user is already logged in
   const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("accessToken"));
@@ -92,7 +94,9 @@ export default function App() {
             <Route path="orders" element={<AdminDashboard onLogout={handleLogout} />} />
             <Route path="audit-logs" element={<AuditLogs onLogout={handleLogout} />} />
             <Route path="loyalty-points" element={<LoyaltyPoints onLogout={handleLogout} />} />
+            <Route path="loyalty-status" element={<LoyaltyStatus onLogout={handleLogout} />} />
             <Route path="customer-onboarding" element={<CustomerOnboarding onLogout={handleLogout} />} />
+            <Route path="manual-order" element={<ManualOrder onLogout={handleLogout} />} />
         </Route>
       </Routes>
     </div>
